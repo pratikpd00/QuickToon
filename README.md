@@ -1,2 +1,3 @@
 # QuickToon
-Quickly generates cel shaders for a scene
+An addon for Blender that generates a toon shader for all meshes
+in the scene.
