@@ -10,6 +10,12 @@ def toonify():
 
 def add_shader(material: Material):
     tree = material.node_tree
-    tree.nodes.new("ShaderNodeShaderToRGB")
+    to_RGB_node = tree.nodes.new("ShaderNodeShaderToRGB")
+    color_ramp_node = tree.nodes.new("ShaderNodeValToRGB")
+    outline_node = tree.nodes.new("ShaderNodeLayerWeight")
+    outline_ramp_node = tree.nodes.new("ShaderNodeValToRGB")
+    mix_node = tree.nodes.new("ShaderNodeMixRGB")
+
+
 
 toonify()
