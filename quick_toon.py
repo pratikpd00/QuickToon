@@ -41,6 +41,13 @@ def add_shader(material: Material):
     links.new(color_ramp_node.inputs[0], to_RGB_node.outputs[0])
     links.new(to_RGB_node.inputs[0], material_socket)
 
+def add_shades(ramp: bpy.types.TextureNodeValToRGB, shades=2):
+    #changes interpolation to constant
+    ramp.color_ramp.interpolation = "CONSTANT"
+    i = 1
+    while (i<shades):
+        ramp.color_ramp.elements.new(i/shades)
+        i += 1
 
 
     
