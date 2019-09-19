@@ -50,7 +50,8 @@ def add_shades(ramp: bpy.types.TextureNodeValToRGB, shades=2, start_shade=(0, 0,
     color_stops[0].color = start_shade
     color_stops[1].color = end_shade
     while i<shades:
-        ramp.color_ramp.elements.new(i/shades)
+        element = ramp.color_ramp.elements.new(i/shades)
+        element.color = interpolate_color(i/shades, start_shade, end_shade)
         i += 1
 
 
