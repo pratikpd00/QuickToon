@@ -8,7 +8,7 @@ def toonify():
     for m in D.materials:
         add_shader(m)
 
-def add_shader(material: Material, start_color=(1, 1, 1, 1), end_color=(1, 1, 1, 1), shades=4):
+def add_shader(material: Material, start_color=(1, 1, 1, 1), end_color=(0, 0, 0, 1), shades=4):
     """Takes a material and adds nodes to it to make it a toon shader
     
     Arguments:
@@ -47,6 +47,8 @@ def add_shader(material: Material, start_color=(1, 1, 1, 1), end_color=(1, 1, 1,
 
 
 def add_colors(ramp: bpy.types.TextureNodeValToRGB, shades=2, start_color=(1, 1, 1, 1), end_color=(0, 0, 0, 1), end_position=0):
+    if shades < 2:
+        raise ValueError("shades cannot be less than 2")
     #changes interpolation to constant
     ramp.color_ramp.interpolation = "CONSTANT"
     color_stops = ramp.color_ramp.elements
@@ -54,11 +56,11 @@ def add_colors(ramp: bpy.types.TextureNodeValToRGB, shades=2, start_color=(1, 1,
     color_stops[0].color = start_color
     color_stops[1].position = end_position
     color_stops[1].color = end_color
-    i = 1
+    i = 2
     #adds more ColorRampElements
     while i<shades:
-        location = (end_position)*(i/shades)
-        element = ramp.color_ramp.elements.new(i/shades)
+        location = (end_position)*(i/(shades+1))
+        element = ramp.color_ramp.elements.new(location)
         element.color = interpolate_color(i/shades, start_color, end_color)
         i += 1
 
@@ -91,8 +93,5 @@ def interpolate_color(combine_value: float, start_color=(1, 1, 1, 1), end_color=
         n += 1
 
     return tuple(l)
-
-
-
 
 toonify()
