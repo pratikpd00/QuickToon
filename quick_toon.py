@@ -41,16 +41,48 @@ def add_shader(material: Material):
     links.new(color_ramp_node.inputs[0], to_RGB_node.outputs[0])
     links.new(to_RGB_node.inputs[0], material_socket)
 
-def add_shades(ramp: bpy.types.TextureNodeValToRGB, shades=2):
+
+def add_shades(ramp: bpy.types.TextureNodeValToRGB, shades=2, start_shade=(0, 0, 0, 1), end_shade=(1, 1, 1, 1)):
     #changes interpolation to constant
     ramp.color_ramp.interpolation = "CONSTANT"
     i = 1
-    while (i<shades):
+    color_stops = ramp.color_ramp.elements
+    color_stops[0].color = start_shade
+    color_stops[1].color = end_shade
+    while i<shades:
         ramp.color_ramp.elements.new(i/shades)
         i += 1
 
 
-    
+def interpolate_color(combine_value: float, start_color=(0, 0, 0, 1), end_color=(1, 1, 1, 1)):
+    """Interpolates a color based on two other colors and a value between 0 and 1
+   
+    Arguments:
+        combine_value {float} -- The fraction to interpolate by. In the interval [0, 1]
+   
+    Keyword Arguments:
+        start_color {tuple} -- RGBA value of the first color (default: {(0, 0, 0, 1)})
+        end_color {tuple} -- RGBA value of the second color (default: {(1, 1, 1, 1)})
+   
+    Raises:
+        ValueError: if combine_calue is not in [1, 0]
+   
+    Returns:
+        tuple -- RGBA value of the interpolated color
+    """
+    if combine_value > 1 or combine_value < 0:
+        raise ValueError("combine_value needs to be between 0 and 1")
+
+    l = []
+    n = 0
+
+    while n < 4:
+        toAdd = (end_color[n] - start_color[n]) * combine_value + start_color[n]
+        l.append(toAdd)
+        n+=1
+
+    return tuple(l)
+
 
 
 toonify()
