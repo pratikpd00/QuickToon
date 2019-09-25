@@ -3,11 +3,6 @@ from mathutils import *
 D = bpy.data
 C = bpy.context
 
-def toonify():
-    for m in D.materials:
-        add_shader(m)
-
-
 def add_shader(material: bpy.types.Material, start_color=(1, 1, 1, 1), end_color=(0, 0, 0, 1), shades=4):
     """Adds a toon shader to a material
     
@@ -122,5 +117,3 @@ def mix_to_multiply(mix: bpy.types.ShaderNodeMixRGB):
     mix.blend_type = "MULTIPLY"
     mix.inputs[0].default_value = 1
 
-
-toonify()
