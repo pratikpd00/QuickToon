@@ -12,21 +12,23 @@ bl_info = {
 }
 
 class GenerateShaderOperator(bpy.types.Operator):
-    bl_idname = "object.generateshader"
+    bl_idname = "object.generate_shader"
     bl_label = "Generate shader"
 
     start_shade: FloatVectorProperty(
         name="start_shade",
         description="The RGBA values of the starting color",
         size=4,
-        default=(1, 1, 1, 1)
+        default=(1, 1, 1, 1),
+        subtype='COLOR'
     )
 
     end_shade: FloatVectorProperty(
         name="end_shade",
         description="the RGBA values of the ending color",
         size=4,
-        default=(0, 0, 0, 1)
+        default=(0, 0, 0, 1),
+        subtype='COLOR'
     )
 
     shades: IntProperty(
@@ -37,13 +39,16 @@ class GenerateShaderOperator(bpy.types.Operator):
         soft_max=10
     )
 
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
     def execute(self, context):
         quick_toon.add_shader(material=context.material, start_color=self.start_shade, end_color=self.end_shade, shades=self.shades)
         return {'FINISHED'}
 
 
 class ToonMenu(bpy.types.Panel):
-    bl_idname = "TOON_SHADER_generate"
+    bl_idname = "TOON_SHADER_PT_generate"
     bl_label = "Generate toon shader"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
@@ -51,12 +56,39 @@ class ToonMenu(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("object.generateshader", text="generate shader")
+        layout.row().label(text="Base colors:")
+        layout.row().prop(context.object, "start_shade")
+        layout.row().prop(context.object, "end_shade")
+        layout.row().operator("object.generate_shader", text="Generate shader")
 
 
 classes = (GenerateShaderOperator, ToonMenu)
 
 def register():
+    #the following properties are for testing purposes
+    bpy.types.Object.start_shade: FloatVectorProperty(
+        name="start_shade",
+        description="The RGBA values of the starting color",
+        size=4,
+        default=(1, 1, 1, 1),
+        subtype='COLOR'
+    )
+
+    bpy.types.Object.end_shade: FloatVectorProperty(
+        name="end_shade",
+        description="the RGBA values of the ending color",
+        size=4,
+        default=(0, 0, 0, 1),
+        subtype='COLOR'
+    )
+
+    bpy.types.Object.shades: IntProperty(
+        name="shades",
+        description="the number of shades in the shader",
+        default=2,
+        soft_min=2,
+        soft_max=10
+    )
     for c in classes:
         bpy.utils.register_class(c)
 
