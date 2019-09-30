@@ -2,7 +2,7 @@
 An script for Blender that sets up the nodes necessary for a toon shader
 
 ## Warning!
-This script has only been tested using Eevee and the pricipled shader. The UI is still in development and does not work yet.
+This script has only been tested using Eevee and the pricipled shader. This addon has not been tested with textures.
 
 ## How to use this script
 The add_shader(material, start_color, end_color, shades) method from module quick_toon adds a toon shader to a material
