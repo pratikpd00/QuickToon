@@ -16,7 +16,7 @@ class GenerateShaderOperator(bpy.types.Operator):
     bl_label = "Generate shader"
 
     start_shade: FloatVectorProperty(
-        name="start_shade",
+        name="Color 1",
         description="The RGBA values of the starting color",
         size=4,
         default=(1, 1, 1, 1),
@@ -26,7 +26,7 @@ class GenerateShaderOperator(bpy.types.Operator):
     )
 
     end_shade: FloatVectorProperty(
-        name="end_shade",
+        name="Color 2",
         description="the RGBA values of the ending color",
         size=4,
         default=(0, 0, 0, 1),
@@ -36,7 +36,7 @@ class GenerateShaderOperator(bpy.types.Operator):
     )
 
     shades: IntProperty(
-        name="shades",
+        name="Number of shades",
         description="the number of shades in the shader",
         default=2,
         soft_min=2,
@@ -61,6 +61,7 @@ class ToonMenu(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         layout.row().label(text="Base colors:")
+        layout.row().prop(context.object, "start_shade")
         layout.row().operator("object.generate_shader", text="Generate shader")
 
 
