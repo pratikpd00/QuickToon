@@ -2,7 +2,7 @@
 An script for Blender that sets up the nodes necessary for a toon shader
 
 ## Warning!
-This script has only been tested using Eevee and the pricipled shader. This addon has not been tested with textures. The UI is still in development but should work.
+This addon only works with eevee. Color data such as textures do not work as intended yet.
 
 ## How to generate a toon shader using the GUI
 This addon adds a panel called "Generate toon shader" to the material tab of the properties editor. To add a toon shader to a mesh, have the mesh selected, and click on
