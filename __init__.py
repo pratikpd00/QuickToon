@@ -43,11 +43,8 @@ class GenerateShaderOperator(bpy.types.Operator):
         soft_max=10
     )
 
-    def invoke(self, context, event):
-        return context.window_manager.invoke_props_dialog(self)
-
     def execute(self, context):
-        quick_toon.add_shader(material=context.material, start_color=self.start_shade, end_color=self.end_shade, shades=self.shades)
+        quick_toon.add_shader(material=context.material, start_color=context.object.start_shade, end_color=context.object.end_shade, shades=context.object.shades)
         return {'FINISHED'}
 
 
@@ -62,6 +59,8 @@ class ToonMenu(bpy.types.Panel):
         layout = self.layout
         layout.row().label(text="Base colors:")
         layout.row().prop(context.object, "start_shade")
+        layout.row().prop(context.object, "end_shade")
+        layout.row().prop(context.object, "shades")
         layout.row().operator("object.generate_shader", text="Generate shader")
 
 
@@ -69,7 +68,7 @@ classes = (GenerateShaderOperator, ToonMenu)
 
 def register():
     #the following properties are for testing purposes
-    bpy.types.Object.start_shade: FloatVectorProperty(
+    bpy.types.Object.start_shade = FloatVectorProperty(
         name="start_shade",
         description="The RGBA values of the starting color",
         size=4,
@@ -78,7 +77,7 @@ def register():
         soft_min=0.0
     )
 
-    bpy.types.Object.end_shade: FloatVectorProperty(
+    bpy.types.Object.end_shade = FloatVectorProperty(
         name="end_shade",
         description="the RGBA values of the ending color",
         size=4,
@@ -87,7 +86,7 @@ def register():
         soft_min=0.0
     )
 
-    bpy.types.Object.shades: IntProperty(
+    bpy.types.Object.shades = IntProperty(
         name="shades",
         description="the number of shades in the shader",
         default=2,
