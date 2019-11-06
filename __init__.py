@@ -12,36 +12,9 @@ bl_info = {
 }
 
 class GenerateShaderOperator(bpy.types.Operator):
+    """An operator that runs the add_shader method """
     bl_idname = "object.generate_shader"
     bl_label = "Generate shader"
-
-    start_shade: FloatVectorProperty(
-        name="Color 1",
-        description="The RGBA values of the starting color",
-        size=4,
-        default=(1, 1, 1, 1),
-        subtype='COLOR',
-        soft_max=1.0,
-        soft_min=0.0
-    )
-
-    end_shade: FloatVectorProperty(
-        name="Color 2",
-        description="the RGBA values of the ending color",
-        size=4,
-        default=(0, 0, 0, 1),
-        subtype='COLOR',
-        soft_max=1.0,
-        soft_min=0.0
-    )
-
-    shades: IntProperty(
-        name="Number of shades",
-        description="the number of shades in the shader",
-        default=2,
-        soft_min=2,
-        soft_max=10
-    )
 
     def execute(self, context):
         quick_toon.add_shader(material=context.material, start_color=context.object.start_shade, end_color=context.object.end_shade, shades=context.object.shades)
@@ -67,9 +40,9 @@ class ToonMenu(bpy.types.Panel):
 classes = (GenerateShaderOperator, ToonMenu)
 
 def register():
-    #the following properties are for testing purposes
+    #roperties used to generate a shader
     bpy.types.Object.start_shade = FloatVectorProperty(
-        name="start_shade",
+        name="Color 1",
         description="The RGBA values of the starting color",
         size=4,
         subtype='COLOR',
@@ -78,7 +51,7 @@ def register():
     )
 
     bpy.types.Object.end_shade = FloatVectorProperty(
-        name="end_shade",
+        name="Color 2",
         description="the RGBA values of the ending color",
         size=4,
         subtype='COLOR',
@@ -87,7 +60,7 @@ def register():
     )
 
     bpy.types.Object.shades = IntProperty(
-        name="shades",
+        name="Number of shades",
         description="the number of shades in the shader",
         default=2,
         soft_min=2,
