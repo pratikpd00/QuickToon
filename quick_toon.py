@@ -1,5 +1,6 @@
 
 import bpy
+from bpy.types import Node
 from mathutils import *
 D = bpy.data
 C = bpy.context
@@ -32,6 +33,8 @@ def add_shader(material: bpy.types.Material, start_color=(1, 1, 1, 1), end_color
     material_socket = material_link.from_socket
     links.remove(material_link)
 
+    material_node = material_socket.node
+
     #creates new links
     links.new(output_socket, mix_node.outputs[0])
     #layer weight
@@ -47,6 +50,18 @@ def add_shader(material: bpy.types.Material, start_color=(1, 1, 1, 1), end_color
     add_colors(ramp=color_ramp_node, shades=shades, start_color=start_color, end_color=end_color, end_position=shades/(shades+1))
     #changes a mix shader to multiply
     mix_to_multiply(mix_node)
+
+    #arrange Nodes
+    arrange_shader_nodes(material_node, color_ramp_node, to_RGB_node)
+
+def arrange_shader_nodes(material_node: Node, ramp: Node, to_rgb: Node):
+    base_location = material_node.location
+    x = base_location[0]
+    y = base_location[1]
+    rgb_x = x + material_node.width + 100
+    ramp_x = rgb_x + to_rgb.width + 100
+    ramp.location = [ramp_x, y]
+    to_rgb.location = [rgb_x, y]
 
 
 def add_colors(ramp: bpy.types.TextureNodeValToRGB, shades=2, start_color=(1, 1, 1, 1), end_color=(0, 0, 0, 1), end_position=0):
@@ -113,7 +128,7 @@ def interpolate_color(combine_value: float, start_color=(1, 1, 1, 1), end_color=
 
 
 def mix_to_multiply(mix: bpy.types.ShaderNodeMixRGB):
-    """Changes a Mix node to a multiuply Node
+    """Changes a Mix node to a multiiply Node
     """
     mix.blend_type = "MULTIPLY"
     mix.inputs[0].default_value = 1
