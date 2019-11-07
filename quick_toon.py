@@ -57,6 +57,13 @@ def add_shader(material: bpy.types.Material, start_color=(1, 1, 1, 1), end_color
     arrange_main(color_ramp_node, outline_ramp_node, mix_node, output_node)
 
 def arrange_shader_nodes(material_node: Node, ramp: Node, to_rgb: Node):
+    """arranges the part of the node setup used for shading
+    
+    Arguments:
+        material_node {Node} -- The original material node
+        ramp {Node} -- the color ramp node
+        to_rgb {Node} -- the shader to rgb node
+    """
     base_location = material_node.location
     x = base_location[0]
     y = base_location[1]
@@ -66,6 +73,13 @@ def arrange_shader_nodes(material_node: Node, ramp: Node, to_rgb: Node):
     to_rgb.location = [rgb_x, y]
 
 def arrange_outline_nodes(material_node: Node, layer_node: Node, ramp_node: Node):
+    """Arranges the part of the node setup used for the outline
+    
+    Arguments:
+        material_node {Node} -- the original material node
+        layer_node {Node} -- the layer_weight node
+        ramp_node {Node} -- the color ramp node
+    """
     base_location = material_node.location
     x = base_location[0]
     y = base_location[1]
@@ -77,6 +91,14 @@ def arrange_outline_nodes(material_node: Node, layer_node: Node, ramp_node: Node
     ramp_node.location = [ramp_x, ramp_y]
 
 def arrange_main(shader_ramp_node: Node, outline_ramp_node: Node, mix_node: Node, output_node: Node):
+    """Arranges the mix and output nodes
+    
+    Arguments:
+        shader_ramp_node {Node} -- the color ramp node that controls shading
+        outline_ramp_node {Node} -- the color ramp node for the outline
+        mix_node {Node} -- the mix node
+        output_node {Node} -- the output node
+    """
     shader_x = shader_ramp_node.location[0] + shader_ramp_node.width
     outline_x = outline_ramp_node.location[0] + outline_ramp_node.width
     shader_y = shader_ramp_node.location[1]
