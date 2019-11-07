@@ -32,7 +32,7 @@ def add_shader(material: bpy.types.Material, start_color=(1, 1, 1, 1), end_color
     output_socket = material_link.to_socket
     material_socket = material_link.from_socket
     links.remove(material_link)
-
+    output_node = output_socket.node
     material_node = material_socket.node
 
     #creates new links
@@ -53,6 +53,8 @@ def add_shader(material: bpy.types.Material, start_color=(1, 1, 1, 1), end_color
 
     #arrange Nodes
     arrange_shader_nodes(material_node, color_ramp_node, to_RGB_node)
+    arrange_outline_nodes(material_node, outline_node, outline_ramp_node)
+    arrange_main(color_ramp_node, outline_ramp_node, mix_node, output_node)
 
 def arrange_shader_nodes(material_node: Node, ramp: Node, to_rgb: Node):
     base_location = material_node.location
@@ -62,6 +64,29 @@ def arrange_shader_nodes(material_node: Node, ramp: Node, to_rgb: Node):
     ramp_x = rgb_x + to_rgb.width + 100
     ramp.location = [ramp_x, y]
     to_rgb.location = [rgb_x, y]
+
+def arrange_outline_nodes(material_node: Node, layer_node: Node, ramp_node: Node):
+    base_location = material_node.location
+    x = base_location[0]
+    y = base_location[1]
+    layer_y = y + ramp_node.height + 100 
+    ramp_y = layer_y 
+    layer_x = x + material_node.width + 100 
+    ramp_x = layer_x + layer_node.width + 100 
+    layer_node.location = [layer_x, layer_y]
+    ramp_node.location = [ramp_x, ramp_y]
+
+def arrange_main(shader_ramp_node: Node, outline_ramp_node: Node, mix_node: Node, output_node: Node):
+    shader_x = shader_ramp_node.location[0] + shader_ramp_node.width
+    outline_x = outline_ramp_node.location[0] + outline_ramp_node.width
+    shader_y = shader_ramp_node.location[1]
+    outline_y = outline_ramp_node.location[1] - outline_ramp_node.height
+    mix_x = max(shader_x, outline_x) + 100
+    mix_y = (shader_y + outline_y)/2 
+    mix_node.location = [mix_x, mix_y]
+    output_x = mix_x + mix_node.width + 100
+    output_node.location = [output_x, mix_y]
+
 
 
 def add_colors(ramp: bpy.types.TextureNodeValToRGB, shades=2, start_color=(1, 1, 1, 1), end_color=(0, 0, 0, 1), end_position=0):
